@@ -660,29 +660,5 @@
         Exposing Numeral
     ************************************/
 
-    function makeGlobal() {
-        /*global ender:false */
-        if (typeof ender !== 'undefined') {
-            return;
-        }
-        oldGlobalNumeral = globalScope.numeral;
-        globalScope.numeral = numeral;
-    }
-
-    // CommonJS module is defined
-    if (hasModule) {
-        module.exports = numeral;
-    } else if (typeof define === 'function' && define.amd) {
-        define('numeral', function (require, exports, module) {
-            if (module.config && module.config() && module.config().noGlobal === true) {
-                // release the global variable
-                globalScope.numeral = oldGlobalNumeral;
-            }
-
-            return numeral;
-        });
-        makeGlobal();
-    } else {
-        makeGlobal();
-    }
+    module.exports = numeral;
 }).call(this);
