@@ -16,6 +16,9 @@
         VERSION = '1.5.3',
         // internal storage for language config files
         languages = {},
+        // the global-scope this is NOT the global object in Node.js
+        globalScope = typeof global !== 'undefined' ? global : this,
+        oldGlobalNumeral,
         currentLanguage = 'en',
         zeroFormat = null,
         defaultFormat = '0,0',
