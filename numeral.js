@@ -657,23 +657,29 @@
         Exposing Numeral
     ************************************/
 
+    function makeGlobal() {
+        /*global ender:false */
+        if (typeof ender !== 'undefined') {
+            return;
+        }
+        oldGlobalNumeral = globalScope.numeral;
+        globalScope.numeral = numeral;
+    }
+
     // CommonJS module is defined
     if (hasModule) {
         module.exports = numeral;
-    }
+    } else if (typeof define === 'function' && define.amd) {
+        define('numeral', function (require, exports, module) {
+            if (module.config && module.config() && module.config().noGlobal === true) {
+                // release the global variable
+                globalScope.numeral = oldGlobalNumeral;
+            }
 
-    /*global ender:false */
-    if (typeof ender === 'undefined') {
-        // here, `this` means `window` in the browser, or `global` on the server
-        // add `numeral` as a global object via a string identifier,
-        // for Closure Compiler 'advanced' mode
-        this['numeral'] = numeral;
-    }
-
-    /*global define:false */
-    if (typeof define === 'function' && define.amd) {
-        define([], function () {
             return numeral;
         });
+        makeGlobal();
+    } else {
+        makeGlobal();
     }
 }).call(this);
